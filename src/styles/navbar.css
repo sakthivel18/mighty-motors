@@ -1,0 +1,11 @@
+#navbarSupportedContent {
+    flex-direction: row-reverse;
+}
+
+.showSupportedContent {
+    display: block !important;
+}
+
+.hideSupportedContent{
+    display: none !important;
+}

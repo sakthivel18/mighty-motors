@@ -1,0 +1,8 @@
+.footer {
+    position: absolute;
+    bottom: 0%;
+    height: 5vh;
+    background-color: black;
+    color: aliceblue;
+    flex-direction: column-reverse;
+}
