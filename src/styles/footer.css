@@ -5,4 +5,9 @@
     background-color: black;
     color: aliceblue;
     flex-direction: column-reverse;
+    /* font-family: "SpecialElite"; */
+}
+
+.fs-27 {
+    font-size: 27px;
 }

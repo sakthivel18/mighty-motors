@@ -7,8 +7,8 @@ const NavBar = () => {
     
     return (
         <React.Fragment>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container-fluid">
+            <nav className="navbar navbar-expand-lg">
+                <div className="container-fluid" id="primary-nav">
                 <Link className="navbar-brand" to="/">Mighty Motors</Link>
                 <button className="navbar-toggler" type="button" onClick={() => setToggleNavBar(!toggleNavbar)} data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -28,8 +28,8 @@ const NavBar = () => {
                 </div>
                 </div>
             </nav>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container-fluid">
+            <nav className="navbar navbar-expand-lg">
+                <div className="container-fluid" id="secondary-nav">
                     <Link className="nav-link" to="/trades">Trades</Link>
                 </div>
             </nav>
