@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/navbar.css';
+import logo from '../images/mighty_motors_logo.png';
 
 const NavBar = () => {
     const [toggleNavbar, setToggleNavBar] = useState(false);
@@ -9,7 +10,9 @@ const NavBar = () => {
         <React.Fragment>
             <nav className="navbar navbar-expand-lg">
                 <div className="container-fluid" id="primary-nav">
-                <Link className="navbar-brand" to="/">Mighty Motors</Link>
+                <Link className="navbar-brand" to="/">
+                    <img src={logo} alt="Mighty Motors" height={75}/>
+                </Link>
                 <button className="navbar-toggler" type="button" onClick={() => setToggleNavBar(!toggleNavbar)} data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
