@@ -1,17 +1,16 @@
 import car from "../images/car1.jpg";
+import "../styles/tradeDetail.css";
 
 const TradeDetail = () => {
     return ( 
-        <div className="container">
+        <div className="container tradeDetailContainer">
             <div className="row">
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
                     <div className="row">
-                        <div className="col-md-5">
-                            <img src={car} height={200}/>
-                        </div>
-                        <div className="col-md-7">
-                            <p> Audi A4 posted by Sakthivel Ravichandran </p>
+                        <div className="col-md-12">
+                        <h4> Audi A5 posted by Sakthivel Ravichandran </h4>
+                        <img src={car} height={200}/>
                         </div>
                     </div>
                 </div>

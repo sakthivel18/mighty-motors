@@ -1,11 +1,10 @@
 .footer {
-    position: absolute;
+    position: relative;
     bottom: 0%;
     height: 10vh;
     background-color: black;
     color: aliceblue;
     flex-direction: column-reverse;
-    /* font-family: "SpecialElite"; */
 }
 
 .fs-27 {

@@ -1,0 +1,9 @@
+.home-page-content {
+    width: auto;
+    margin-left: 200px;
+    margin-top: 120px;
+}
+
+.home-page-content p {
+    font-weight: 300;
+}
