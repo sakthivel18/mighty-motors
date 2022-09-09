@@ -10,3 +10,7 @@
 .fs-27 {
     font-size: 27px;
 }
+
+.pointerCursor {
+    cursor: pointer;
+}

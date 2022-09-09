@@ -1,12 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import '../styles/newTrade.css';
 
 const NewTrade = () => {
+    const navigate = useNavigate();
     return ( 
         <div className="container">
             <div className="row mt-5">
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
-                    <form>
+                    <form onSubmit={() => navigate('/trades')}>
                         <div className="form-group row my-3">
                             <label for="category" className="col-sm-2 col-form-label">Category</label>
                             <div className="col-sm-10">
