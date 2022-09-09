@@ -44,11 +44,12 @@ const Trades = () => {
         }
     ];
     return ( 
-        <div className="container-fluid">
+        <div className="container-fluid mt-3">
             {
                 categories.map((c) => 
                     <div key={Math.random()}>
-                        <h6>{c.categoryName}</h6>
+                        <h5>{c.categoryName}</h5>
+                        <hr/>
                         <div className="row d-flex flex-row">
                         {
                             c.trades.map(trade =><Trade key={Math.random()} tradeDetails={trade}/>)
