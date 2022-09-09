@@ -8,17 +8,17 @@ const Trades = () => {
                 {
                     name: "Audi A5",
                     location: "Charlotte, NC",
-                    imageUrl: "../images/car1.jpg"
+                    image: require("../images/car1.jpg")
                 },
                 {
                     name: "Honda Accord",
                     location: "Austin, TX",
-                    imageUrl: "../images/car1.jpg"
+                    image: require("../images/car2.jpg")
                 },
                 {
                     name: "Toyota Camry",
                     location: "San Francisco, CA",
-                    imageUrl: "../images/car1.jpg"
+                    image: require("../images/car3.jpg")
                 }
             ]
         },
@@ -28,17 +28,17 @@ const Trades = () => {
                 {
                     name: "Audi Q5",
                     location: "Jersey city, NJ",
-                    imageUrl: "../images/car1.jpg"
+                    image: require("../images/car4.jpg")
                 },
                 {
                     name: "BMW X1",
                     location: "Manhattan, NY",
-                    imageUrl: "../images/car1.jpg"
+                    image: require("../images/car5.jpg")
                 },
                 {
                     name: "Mazda CX5",
                     location: "Blacksburg, VA",
-                    imageUrl: "../images/car1.jpg"
+                    image: require("../images/car6.jpg")
                 }
             ]
         }
