@@ -10,7 +10,7 @@ const TradeDetail = () => {
                     <div className="row">
                         <div className="col-md-12">
                         <h4> Audi A5 posted by Sakthivel Ravichandran </h4>
-                        <img src={car} height={200}/>
+                        <img src={car} alt={"car image" + Math.random()} height={200}/>
                         </div>
                     </div>
                 </div>
