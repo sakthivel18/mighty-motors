@@ -102,7 +102,7 @@ exports.updateById = (id, newTrade) => {
     categories.forEach(category => {
         const trade = category.trades.find(trade => trade.id === id);
         if (trade) {
-            const index = category.trades.findIndex(trade);
+            const index = category.trades.findIndex(item => item.id === trade.id);
             category.trades[index].name = newTrade.name;
             category.trades[index].location = newTrade.location;
             category.trades[index].description = newTrade.description;
