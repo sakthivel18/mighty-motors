@@ -11,11 +11,6 @@ app.use(express.urlencoded({ extended : true}));
 app.use(express.json());
 app.use(morgan('tiny'));
 
-
-app.get('/', function (req, res) {
-  res.status(200).json({'message': 'hello world'});
-});
-
 app.use('/trades', tradeRoutes);
 
 app.listen(port, host, () => {
