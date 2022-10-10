@@ -117,7 +117,7 @@ exports.deleteById = (id) => {
     categories.forEach(category => {
         const trade = category.trades.find(trade => trade.id === id);
         if (trade) {
-            const index = category.trades.findIndex(trade);
+            const index = category.trades.findIndex(item => item.id === id);
             category.trades.splice(index, 1);
             return true;
         }

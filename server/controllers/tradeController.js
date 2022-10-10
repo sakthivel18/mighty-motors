@@ -18,7 +18,7 @@ exports.findById = (req, res) => {
 exports.create = (req, res) => {
     let { trade } = req.body;
     model.save(trade);
-    res.send(200).json({
+    res.status(200).json({
         'message' : 'Trade created successfully'
     });
 };
@@ -26,15 +26,15 @@ exports.create = (req, res) => {
 exports.update = (req, res) => {
     let { trade } = req.body;
     model.updateById(trade.id, trade);
-    res.send(200).json({
+    res.status(200).json({
         'message' : 'Trade updated successfully'
     });
 };
 
 exports.delete = (req, res) => {
-    let { trade } = req.body;
-    model.deleteById(trade.id, trade);
-    res.send(200).json({
+    let { id } = req.params;
+    model.deleteById(id);
+    res.status(200).json({
         'message' : 'Trade deleted successfully'
     });
 };
