@@ -11,8 +11,7 @@ const TradeDetail = () => {
         const fetchTrade = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/trades/' + location.state.id);
-                let { trade } = response.data;
-                setTrade(trade);
+                setTrade(response.data.trade);
             } catch (error) {
                 console.log(error);
             }
