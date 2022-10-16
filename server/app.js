@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const tradeRoutes = require('./routes/tradeRoutes');
 
 
@@ -10,7 +11,7 @@ const host = 'localhost';
 app.use(express.urlencoded({ extended : true}));
 app.use(express.json());
 app.use(morgan('tiny'));
-
+app.use(cors());
 app.use('/trades', tradeRoutes);
 
 app.listen(port, host, () => {

@@ -4,11 +4,11 @@ import "../styles/trade.css";
 
 const Trade = (props) => {
     const navigate = useNavigate();
-    const { name, location, image } = props.tradeDetails;
+    const { id, name, location, image } = props.tradeDetails;
 
     return ( 
         <React.Fragment>
-                <div className="card trade-card" onClick={() => navigate("/tradeDetail")}>
+                <div className="card trade-card" onClick={() => navigate("/trade/" + id, { state: { id, image } })}>
                     <img className="card-img-top" src={image} alt={"Card image cap" + Math.random()}/>
                     <div className="card-body">
                         <p className="card-text">{name} available at {location} <br/> 
