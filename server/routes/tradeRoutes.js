@@ -5,6 +5,9 @@ const router = express.Router();
 // GET - Returns all trades
 router.get('/', controller.findAll);
 
+// GET - Returns all category names
+router.get('/categories', controller.findAllCategories);
+
 // GET - Returns a trade with given id
 router.get('/:id', controller.findById);
 

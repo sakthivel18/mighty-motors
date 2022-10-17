@@ -13,6 +13,7 @@ import Signup from './components/Signup';
 import TradeDetail from './components/TradeDetail';
 import Trades from './components/Trades';
 import Login from './components/Login';
+import EditTrade from './components/EditTrade';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route exact path="/trade/:id" element={<TradeDetail/>} />
           <Route exact path="/trades" element={<Trades/>} />
           <Route exact path="/newTrade" element={<NewTrade/>} />
+          <Route exact path="/editTrade/:id" element={<EditTrade/>} />
         </Routes>
       </div>
       <Footer/>
