@@ -24,8 +24,14 @@ const EditTrade = () => {
             if (response.status === 200) {
                 navigate('/trade/' + trade.id, { state: { id: trade.id, image: image } });
             }
-        } catch (error) {
-            console.log(error);
+        } catch(axiosError) {
+            let { status } = axiosError.response;
+            let { message } = axiosError.response.data;
+            let error = {
+                "status": status,
+                "message": message
+            }
+            navigate('/error', { state : { error }});
         }
     }
 

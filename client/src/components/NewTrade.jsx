@@ -20,8 +20,14 @@ const NewTrade = () => {
                 let response = await axios.get('http://localhost:5000/trades/categories');
                 response.data.categoryNames.push({'label' : 'other', 'value' : 0});
                 setCategoryNames(response.data.categoryNames);
-            } catch(error) {
-                console.log(error);
+            } catch(axiosError) {
+                let { status } = axiosError.response;
+                let { message } = axiosError.response.data;
+                let error = {
+                    "status": status,
+                    "message": message
+                }
+                navigate('/error', { state : { error }});
             }
         }
         fetchCategoryNames();
@@ -45,8 +51,14 @@ const NewTrade = () => {
             if (response.status === 200) {
                 navigate('/trades');
             }
-        } catch (error) {
-            console.log(error);
+        } catch(axiosError) {
+            let { status } = axiosError.response;
+            let { message } = axiosError.response.data;
+            let error = {
+                "status": status,
+                "message": message
+            }
+            navigate('/error', { state : { error }});
         }
         
     };

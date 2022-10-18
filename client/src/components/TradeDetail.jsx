@@ -9,12 +9,27 @@ const TradeDetail = () => {
     const [trade, setTrade] = useState(null);
 
     useEffect(() => {
+        if (!location || !location.state || !location.state.image || !location.state.id) {
+            navigate('/error', { state : { 
+                "status" : 404,
+                "message": "Page Not Found"
+             }});
+        }
+    }, []);
+
+    useEffect(() => {
         const fetchTrade = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/trades/' + location.state.id);
                 setTrade(response.data.trade);
-            } catch (error) {
-                console.log(error);
+            } catch(axiosError) {
+                let { status } = axiosError.response;
+                let { message } = axiosError.response.data;
+                let error = {
+                    "status": status,
+                    "message": message
+                }
+                navigate('/error', { state : { error }});
             }
         }
         fetchTrade();
@@ -24,8 +39,14 @@ const TradeDetail = () => {
         try {
             await axios.delete('http://localhost:5000/trades/' + location.state.id);
             navigate('/trades');
-        } catch (error) {
-            console.log(error);
+        } catch(axiosError) {
+            let { status } = axiosError.response;
+            let { message } = axiosError.response.data;
+            let error = {
+                "status": status,
+                "message": message
+            }
+            navigate('/error', { state : { error }});
         }
     }
 
@@ -43,7 +64,7 @@ const TradeDetail = () => {
                                 <button className="btn btn-primary" type="button" onClick={() => navigate('/editTrade/' + trade.id, { state : { trade: trade, image: location.state.image }})}>Edit</button>  
                             </div>
                         </div>
-                        <img src={location.state.image} alt={"car image" + Math.random()} height={200}/>
+                        { location.state.image && <img src={location.state.image} alt={"car image" + Math.random()} height={200}/> }
                         </div>
                     </div>
                 </div>

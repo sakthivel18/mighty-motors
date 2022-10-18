@@ -14,6 +14,9 @@ import TradeDetail from './components/TradeDetail';
 import Trades from './components/Trades';
 import Login from './components/Login';
 import EditTrade from './components/EditTrade';
+import ErrorPage from './components/ErrorPage';
+import About from './components/About';
+import Contact from './components/Contact';
 
 function App() {
   return (
@@ -28,6 +31,10 @@ function App() {
           <Route exact path="/trades" element={<Trades/>} />
           <Route exact path="/newTrade" element={<NewTrade/>} />
           <Route exact path="/editTrade/:id" element={<EditTrade/>} />
+          <Route exact path="/about" element={<About/>} />
+          <Route exact path="/contact" element={<Contact/>} />
+          <Route exact path="/error" element={<ErrorPage/>} />
+          <Route path="*" element={<ErrorPage error={{status: 404, message: "Page Not Found"}}/>} />
         </Routes>
       </div>
       <Footer/>

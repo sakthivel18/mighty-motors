@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Trade from "./Trade";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 
 const Trades = () => {
+    const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
     
     const images = [
@@ -27,8 +29,14 @@ const Trades = () => {
                    });
                 });
                 setCategories(categories);
-            } catch(error) {
-                console.log(error);
+            } catch(axiosError) {
+                let { status } = axiosError.response;
+                let { message } = axiosError.response.data;
+                let error = {
+                    "status": status,
+                    "message": message
+                }
+                navigate('/error', { state : { error }});
             }
             
         }

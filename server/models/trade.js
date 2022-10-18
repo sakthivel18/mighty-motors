@@ -117,7 +117,7 @@ exports.updateById = (id, newTrade) => {
             return true;
         }
     });
-    return false;
+    return true;
 };
 
 exports.deleteById = (id) => {
@@ -129,5 +129,5 @@ exports.deleteById = (id) => {
             return true;
         }
     });
-    return false;
+    return true;
 };
