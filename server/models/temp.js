@@ -1,50 +1,5 @@
 const { DateTime } = require("luxon");
 const { v4: uuidv4 } = require("uuid");
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
-const categorySchema = new Schema({
-    categoryId: {
-        type: String,
-        required: [true, 'categoryId is required']
-    },
-    categoryName: {
-        type: String,
-        required: [true, 'categoryName is required']
-    },
-    trades: [{
-        id: {
-            type: String,
-            required: [true, 'trade id is required']
-        },
-        name: {
-            type: String,
-            required: [true, 'trade name is required']
-        },
-        location: {
-            type: String,
-            required: [true, 'trade location is required']
-        },
-        description: {
-            type: String,
-            required: [true, 'trade description is required']
-        },
-        image: {
-            type: String
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        cost: {
-            type: Number,
-            required: [true, 'trade cost is required']
-        }
-    }]
-}, {timestamps: true});
-
-
-module.exports = mongoose.model('Category', categorySchema);
 
 const categories = [
     {   
@@ -125,6 +80,29 @@ exports.findById = id => {
         }
     }
     return null;
+};
+
+exports.save = trade => {
+    const category = categories.find(category => category.categoryId === trade.categoryId);
+    const newTrade = {
+        id : uuidv4(),
+        name : trade.name,
+        location: trade.location,
+        description: trade.description,
+        image: trade.image,
+        createdAt: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
+        cost: trade.cost
+    };
+    if (category) {
+        const index = categories.findIndex(item => category.categoryId === item.categoryId);
+        categories[index].trades.push(newTrade);
+    } else {
+        categories.push({
+            categoryId: uuidv4(),
+            categoryName: trade.categoryName,
+            trades: [newTrade]
+        });
+    }
 };
 
 exports.updateById = (id, newTrade) => {
