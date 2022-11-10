@@ -16,13 +16,7 @@ mongoose.connect('mongodb://localhost:27017/mighty_motors')
     });
 }).catch(err =>  console.log(err.message));
 
-const corsOptions ={
-    origin: 'http://localhost:3000', 
-    credentials: true,            
-    optionSuccessStatus: 200
-}
 
-// app.use(cors(corsOptions));
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');

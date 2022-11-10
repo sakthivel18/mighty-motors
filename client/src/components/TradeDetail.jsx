@@ -12,7 +12,7 @@ const TradeDetail = () => {
         if (!location || !location.state || !location.state.image || !location.state.id) {
             navigate('/error', { state : { 
                 "status" : 400,
-                "message": "Trade not found"
+                "message": "Bad Request - validation error"
              }});
         }
     }, []);
