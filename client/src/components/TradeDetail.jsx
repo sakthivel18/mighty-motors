@@ -11,8 +11,8 @@ const TradeDetail = () => {
     useEffect(() => {
         if (!location || !location.state || !location.state.image || !location.state.id) {
             navigate('/error', { state : { 
-                "status" : 404,
-                "message": "Page Not Found"
+                "status" : 400,
+                "message": "Trade not found"
              }});
         }
     }, []);
@@ -61,10 +61,10 @@ const TradeDetail = () => {
                             <div className="col-md-6"> <h4> {trade?.name} </h4> </div>
                             <div className="col-md-4 d-flex flex-row-reverse"> 
                                 <button className="btn btn-danger mx-3" type="button" onClick={deleteTrade}>Delete</button> 
-                                <button className="btn btn-primary" type="button" onClick={() => navigate('/editTrade/' + trade.id, { state : { trade: trade, image: location.state.image }})}>Edit</button>  
+                                <button className="btn btn-primary" type="button" onClick={() => navigate('/editTrade/' + trade.id, { state : { trade: trade, image: location?.state?.image }})}>Edit</button>  
                             </div>
                         </div>
-                        { location.state.image && <img src={location.state.image} alt={"car image" + Math.random()} height={200}/> }
+                        { location && location.state && location.state.image && <img src={location.state.image} alt={"car image" + Math.random()} height={200}/> }
                         </div>
                     </div>
                 </div>

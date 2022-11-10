@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const { DateTime } = require("luxon");
 const model = require('../models/trade');
-
+const v4 = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
 
 exports.findAll = async (req, res) => {
     try {
@@ -40,6 +40,9 @@ exports.findAllCategories = async (req, res) => {
 exports.findById = async (req, res) => {
     try {
         const tradeId = req.params.id;
+        if (!tradeId.match(v4)) {
+            return res.status(400).json({'message' : 'Cannot find a story with id: ' + tradeId});
+        }
         const category = await model.findOne({
             trades: {
                 $elemMatch: {
@@ -105,6 +108,9 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const requestBody = req.body;
+        if (!requestBody.trade.id.match(v4)) {
+            return res.status(400).json({'message' : 'Cannot find a story with id: ' + tradeId});
+        }
         const category = await model.findOne({
             trades: {
                 $elemMatch: {
@@ -130,12 +136,33 @@ exports.update = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-    let { id } = req.params;
-    let result = model.deleteById(id);
-    if (!result) return res.status(500).json({ 'message' : 'Internal server error - cannot delete the trade' });
-    return res.status(200).json({
-        'message' : 'Trade deleted successfully'
-    });    
+    try {
+        const { id } = req.params;
+        if (!id.match(v4)) {
+            return res.status(400).json({'message' : 'Cannot find a story with id: ' + tradeId});
+        }
+        const category = await model.findOne({
+            trades: {
+                $elemMatch: {
+                    id: id
+                }
+            }
+        });
+        if (!category) return res.status(500).json({ 'message' : 'Internal server error - cannot delete the trade' });
+        const index = category.trades.findIndex(trade => trade.id === id);
+        category.trades.splice(index, 1);
+        if (category.trades.length === 0) {
+            await model.deleteOne({categoryId: category.categoryId});
+        } else {
+            await category.save();
+        }
+        return res.status(200).json({
+            'message' : 'Trade deleted successfully'
+        });
+    } catch (err) {
+        console.log(err.message);
+        return res.status(500).json({ 'message' : 'Internal server error - cannot delete the trade' });
+    }  
 };
 
 

@@ -13,7 +13,6 @@ const NewTrade = () => {
     const [description, setDescription] = useState('');
     const [cost, setCost] = useState(0);
     const [categoryNames, setCategoryNames] = useState([]);
-
     useEffect(() => {
         const fetchCategoryNames = async () => {
             try {
@@ -62,6 +61,7 @@ const NewTrade = () => {
         }
         
     };
+
 
     return ( 
         <div className="container">
