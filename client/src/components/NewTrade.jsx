@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import '../styles/newTrade.css';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const NewTrade = () => {
     const navigate = useNavigate();
@@ -11,8 +13,13 @@ const NewTrade = () => {
     const [title, setTitle] = useState('');
     const [tradeLocation, setTradeLocation] = useState('');
     const [description, setDescription] = useState('');
-    const [cost, setCost] = useState(0);
+    const [cost, setCost] = useState();
     const [categoryNames, setCategoryNames] = useState([]);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     useEffect(() => {
         const fetchCategoryNames = async () => {
             try {
@@ -38,6 +45,14 @@ const NewTrade = () => {
 
     const postTrade = async () => {
         try {
+            let areOtherFieldsNotValid = !title || !tradeLocation || !description || cost === null || cost === undefined;
+            if (category.id === 0 && (!category.label || areOtherFieldsNotValid)) {
+                setShow(true);
+                return;
+            } else if (areOtherFieldsNotValid) {
+                setShow(true);
+                return;
+            }
             const trade = {
                 categoryId: category.value,
                 categoryName: category.label,
@@ -68,6 +83,17 @@ const NewTrade = () => {
             <div className="row mt-5">
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
+                    <Modal
+                        show={show}
+                        onHide={handleClose}
+                        backdrop="static"
+                        keyboard={false}
+                    >   
+                        <Modal.Body closeButton>Please enter all the fields</Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={handleClose}>Ok</Button>
+                        </Modal.Footer>
+                    </Modal>
                     <form>
                         <div className="form-group row my-3">
                             <label htmlFor="category" className="col-sm-2 col-form-label">Category</label>

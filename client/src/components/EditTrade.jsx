@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 import {  useLocation, useNavigate } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const EditTrade = () => {
     const location = useLocation();
@@ -10,9 +12,18 @@ const EditTrade = () => {
     const [tradeLocation, setTradeLocation] = useState(trade.location);
     const [description, setDescription] = useState(trade.description)
     const [cost, setCost] = useState(trade.cost);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const putTrade = async () => {
         try {
+            let areNotValidTradeDetails = !title || !tradeLocation || cost === null || cost === undefined || isNaN(parseInt(cost)) || !description;
+            if (areNotValidTradeDetails) {
+                setShow(true);
+                return;
+            }
             const newTrade = {
                 id: trade.id,
                 name: title,
@@ -41,6 +52,17 @@ const EditTrade = () => {
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
                     <h3>Edit Trade</h3>
+                    <Modal
+                        show={show}
+                        onHide={handleClose}
+                        backdrop="static"
+                        keyboard={false}
+                    >   
+                        <Modal.Body closeButton>Please enter all the fields</Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={handleClose}>Ok</Button>
+                        </Modal.Footer>
+                    </Modal>
                     <form>
                         <div className="form-group row my-3">
                             <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
