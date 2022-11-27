@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const userRoutes = require('./routes/userRoutes');
 const tradeRoutes = require('./routes/tradeRoutes');
 
 
@@ -30,7 +32,14 @@ app.use((req, res, next) => {
   });
 app.use(express.urlencoded({ extended : true}));
 app.use(express.json());
+app.use(session({
+    secret: 'this is a secret key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }))
 app.use(morgan('tiny'));
+app.use('/user', userRoutes);
 app.use('/trades', tradeRoutes);
 
 
