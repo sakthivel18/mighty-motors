@@ -7,7 +7,7 @@ import { hasLoggedIn } from "../services/AuthService";
 
 const Profile = () => {
     const authApi = useContext(AuthApi);
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState("");   
 
     useEffect(() => {
         if (!authApi.auth) return;
