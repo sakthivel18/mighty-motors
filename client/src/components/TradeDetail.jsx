@@ -20,7 +20,7 @@ const TradeDetail = () => {
     useEffect(() => {
         const fetchTrade = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/trades/' + location.state.id);
+                const response = await axios.get('http://localhost:5000/trades/' + location.state.id, {withCredentials: true});
                 setTrade(response.data.trade);
             } catch(axiosError) {
                 let { status } = axiosError.response;
@@ -37,7 +37,7 @@ const TradeDetail = () => {
 
     const deleteTrade = async () => {
         try {
-            await axios.delete('http://localhost:5000/trades/' + location.state.id);
+            await axios.delete('http://localhost:5000/trades/' + location.state.id, {withCredentials: true});
             navigate('/trades');
         } catch(axiosError) {
             let { status } = axiosError.response;

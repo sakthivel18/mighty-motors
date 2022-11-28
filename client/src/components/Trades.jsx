@@ -20,7 +20,7 @@ const Trades = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/trades/');
+                const response = await axios.get('http://localhost:5000/trades/', {withCredentials: true});
                 let { categories } = response.data;
                 categories.forEach(category => {
                    category.trades.forEach(trade => {

@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Snackbar from '@mui/material/Snackbar';
+import { login } from "../services/AuthService";
+import AuthApi from "../utils/AuthApi";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
+    const navigate = useNavigate();
+    const authApi = useContext(AuthApi);
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [snackbar, setSnackbar] = useState({
@@ -9,15 +15,28 @@ const Login = () => {
         message: ''
     });
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email || !password) {
             return setSnackbar({
                 open: true,
                 message: 'Please enter both email and password'
             });
         }
-        console.log(email, password);
+        try {
+            let res = await login({email, password});
+            console.log(res.data);
+            if (res.data.auth) {
+                authApi.setAuth(true);
+                navigate("/user/profile");
+            } else {
+                console.log("login failed");
+            }
+        } catch(err) {
+            authApi.setAuth(false);
+            console.log("login failed");
+        }
     }
+
     const handleClose = () => {
         setSnackbar({
             open: false,
@@ -59,10 +78,10 @@ const Login = () => {
                         <div className="d-flex flex-row-reverse m-2">
                             <a className="text-primary" href="/signUp">Forgot password?</a>
                         </div>
-                        <div className="d-flex flex-row-reverse">
-                            <button className="btn btn-primary" onClick={handleLogin}>Login</button>
-                        </div>
                     </form>
+                    <div className="d-flex flex-row-reverse">
+                            <button type="" className="btn btn-primary" onClick={handleLogin}>Login</button>
+                    </div>
                 </div>
             </div>
             {SnackbarAlert}

@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Snackbar from '@mui/material/Snackbar';
+import { signup } from "../services/AuthService";
+import AuthApi from "../utils/AuthApi";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+    const authApi = useContext(AuthApi);
+    const navigate = useNavigate();
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
     const [email, setEmail] = useState();
@@ -11,14 +16,22 @@ const Signup = () => {
         message: ''
     });
 
-    const handleSignup = () => {
+    const handleSignup = async (e) => {
+        e.preventDefault();
         if (!email || !password || !firstName || !lastName) {
             return setSnackbar({
                 open: true,
                 message: 'Please enter all the details'
             });
         }
-        console.log(email, password);
+        try {
+            let res = await signup({firstName, lastName, email, password});
+            if (res.data.auth) {
+                navigate("/login");
+            }
+        } catch(err) {
+            authApi.setAuth(false);
+        }
     }
     const handleClose = () => {
         setSnackbar({
@@ -71,7 +84,7 @@ const Signup = () => {
                             </div>
                         </div>
                         <div className="d-flex flex-row-reverse">
-                            <button className="btn btn-primary" onClick={handleSignup}>Signup</button>
+                            <button className="btn btn-primary" onClick={e => handleSignup(e)}>Signup</button>
                         </div>
                     </form>
                 </div>

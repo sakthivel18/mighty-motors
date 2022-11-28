@@ -31,7 +31,7 @@ const EditTrade = () => {
                 cost: cost, 
                 description: description
             }
-            const response = await axios.put('http://localhost:5000/trades/' + trade.id, { trade: newTrade });
+            const response = await axios.put('http://localhost:5000/trades/' + trade.id, { trade: newTrade }, {withCredentials: true});
             if (response.status === 200) {
                 navigate('/trade/' + trade.id, { state: { id: trade.id, image: image } });
             }

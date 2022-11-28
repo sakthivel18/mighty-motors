@@ -23,7 +23,7 @@ const NewTrade = () => {
     useEffect(() => {
         const fetchCategoryNames = async () => {
             try {
-                let response = await axios.get('http://localhost:5000/trades/categories');
+                let response = await axios.get('http://localhost:5000/trades/categories', {withCredentials: true});
                 response.data.categoryNames.push({'label' : 'other', 'value' : 0});
                 setCategoryNames(response.data.categoryNames);
             } catch(axiosError) {
