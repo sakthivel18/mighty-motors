@@ -31,12 +31,12 @@ function App() {
       try {
         const res = await hasLoggedIn();
         if (res.data.auth) {
-          authApi.setAuth(true);
+          setAuth(true);
         } else {
-          authApi.setAuth(false);
+          setAuth(false);
         }
       } catch (err) {
-        authApi.setAuth(false);
+        setAuth(false);
       }
     }
     readSession();

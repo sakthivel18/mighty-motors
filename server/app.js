@@ -36,7 +36,7 @@ app.use(cors(corsOptions));
         resave: false,
         saveUninitialized: false,
         store: new MongoStore({mongoUrl: 'mongodb://localhost:27017/mighty_motors'}),
-        cookie: {maxAge: 60*60*1000}
+        cookie: {secure: false, maxAge: 60*60*1000}
         })
 );
 app.use(express.urlencoded({ extended : true}));

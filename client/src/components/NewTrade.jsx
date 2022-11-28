@@ -61,7 +61,7 @@ const NewTrade = () => {
                 description: description,
                 cost: cost
             };
-            const response = await axios.post('http://localhost:5000/trades/create', { "trade" : trade });
+            const response = await axios.post('http://localhost:5000/trades/create', { "trade" : trade }, {withCredentials: true});
             if (response.status === 200) {
                 navigate('/trades');
             }

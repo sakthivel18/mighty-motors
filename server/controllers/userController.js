@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const Trade = require('../models/trade');
 
 exports.login = async (req, res) => {
     try {
@@ -98,3 +99,28 @@ exports.signOut = async (req, res) => {
         });
     }
 } */
+
+exports.getUserTrades = async (req, res) => {
+    try {
+        console.log('inside getUserTrades');
+        const categories = await Trade.find();
+        let userTrades = [];
+        categories.forEach(category => {
+            category.trades.forEach(trade => {
+                if (trade.createdBy == req.session.user) {
+                    userTrades.push({
+                        ...trade._doc,
+                        categoryName: category.categoryName    
+                    });
+                }
+            });
+        });
+        return res.status(200).json({
+            trades: userTrades
+        });
+    } catch (err) {
+        return res.status(500).json({
+            err
+        });
+    }
+}

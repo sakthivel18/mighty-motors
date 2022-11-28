@@ -46,7 +46,7 @@ const Trades = () => {
     return ( 
         <div className="container-fluid mt-3">
             {
-                categories.length && categories.map((c) => 
+                categories.length !== 0 && categories.map((c) => 
                     <div key={Math.random()}>
                         <h5>{c.categoryName}</h5>
                         <hr/>

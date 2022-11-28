@@ -20,4 +20,6 @@ router.put('/:id', controller.update);
 // DELETE - deletes a trade
 router.delete('/:id', controller.delete);
 
+
+
 module.exports = router;

@@ -37,6 +37,10 @@ const categorySchema = new Schema({
         cost: {
             type: Number,
             required: [true, 'trade cost is required']
+        },
+        createdBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         }
     }]
 }, {timestamps: true});
