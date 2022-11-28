@@ -5,7 +5,6 @@ const v4 = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[
 
 exports.findAll = async (req, res) => {
     try {
-        console.log("inside find all");
         let categories = await model.find();
         if (!categories) return res.status(500).json({ 'message' : 'Internal server error - cannot fetch categories' });
         return res.status(200).json({
@@ -21,7 +20,6 @@ exports.findAll = async (req, res) => {
 
 exports.findAllCategories = async (req, res) => {
     try {
-        console.log("inside find all cat");
         let categories = await model.find();
         if (!categories) return res.status(500).json({ 'message' : 'Internal server error - cannot fetch category names' });
         let categoryNames = categories.map(category => {
@@ -41,7 +39,6 @@ exports.findAllCategories = async (req, res) => {
 
 exports.findById = async (req, res) => {
     try {
-        console.log("inside find by id");
         const tradeId = req.params.id;
         if (!tradeId.match(v4)) {
             return res.status(400).json({'message' : 'Cannot find a trade with id: ' + tradeId});
@@ -67,7 +64,6 @@ exports.findById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        console.log("inside create");
         const requestBody = req.body.trade;
         const doc = await model.findOne({categoryId: requestBody.categoryId});
         if (!doc) {
@@ -114,7 +110,6 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        console.log("inside update");
         const requestBody = req.body;
         if (!requestBody.trade.id.match(v4)) {
             return res.status(400).json({'message' : 'Cannot find a trade with id: ' + tradeId});
@@ -174,27 +169,3 @@ exports.delete = async (req, res) => {
     }  
 };
 
-/* exports.getUserTrades = async (req, res) => {
-    try {
-        console.log('inside getUserTrades');
-        const categories = await model.find();
-        let userTrades = [];
-        categories.forEach(category => {
-            category.trades.forEach(trade => {
-                if (trade.createdBy == req.session.user) {
-                    userTrades.push({
-                        ...trade._doc,
-                        categoryName: category.categoryName    
-                    });
-                }
-            });
-        });
-        return res.status(200).json({
-            trades: userTrades
-        });
-    } catch (err) {
-        return res.status(500).json({
-            err
-        });
-    }
-} */
