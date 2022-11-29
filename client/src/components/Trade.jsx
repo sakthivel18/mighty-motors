@@ -4,7 +4,7 @@ import "../styles/trade.css";
 
 const Trade = (props) => {
     const navigate = useNavigate();
-    const { id, name, location, image } = props.tradeDetails;
+    const { id, name, location, image, createdAt } = props.tradeDetails;
 
     return ( 
         <React.Fragment>
@@ -12,7 +12,7 @@ const Trade = (props) => {
                     <img className="card-img-top" src={image} alt={"Card image cap" + Math.random()}/>
                     <div className="card-body">
                         <p className="card-text">{name} available at {location} <br/> 
-                        posted on: {new Date().toLocaleDateString() }
+                        posted on: {new Date(createdAt).toLocaleDateString() }
                         </p>
                     </div>
                 </div>

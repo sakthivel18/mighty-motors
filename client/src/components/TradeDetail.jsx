@@ -2,11 +2,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/tradeDetail.css";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from "./Alert";
 
 const TradeDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [trade, setTrade] = useState(null);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'error'
+    });
 
     useEffect(() => {
         if (!location || !location.state || !location.state.image || !location.state.id) {
@@ -34,11 +41,45 @@ const TradeDetail = () => {
         }
         fetchTrade();
     }, []);
+    
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar({
+            open: false,
+            message: '',
+            severity: 'error'
+        })
+    }
+
+    const SnackbarAlert = (
+            <Snackbar
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message={snackbar.message}
+                key={'top' + 'center'}
+            >
+                <Alert severity={snackbar.severity} onClose={handleClose} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>   
+            </Snackbar>
+        
+    );
 
     const deleteTrade = async () => {
         try {
             await axios.delete('http://localhost:5000/trades/' + location.state.id, {withCredentials: true});
-            navigate('/trades');
+            await setSnackbar({
+                open: true,
+                message: 'Trade deleted successfully',
+                severity: 'success'
+            });
+            setTimeout(() => {
+                navigate('/trades');
+            }, 500);
         } catch(axiosError) {
             let { status } = axiosError.response;
             let { message } = axiosError.response.data;
@@ -100,7 +141,7 @@ const TradeDetail = () => {
                 </div>
                 <div className="col-md-2"></div>
             </div>
-            
+            {SnackbarAlert}
         </div>
      );
 }

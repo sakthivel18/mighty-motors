@@ -3,7 +3,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { login } from "../services/AuthService";
 import AuthApi from "../utils/AuthApi";
 import { useNavigate } from "react-router-dom";
-
+import Alert from "./Alert";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -12,49 +12,67 @@ const Login = () => {
     const [password, setPassword] = useState();
     const [snackbar, setSnackbar] = useState({
         open: false,
-        message: ''
+        message: '',
+        severity: 'error'
     });
 
     const handleLogin = async () => {
         if (!email || !password) {
             return setSnackbar({
                 open: true,
-                message: 'Please enter both email and password'
+                message: 'Please enter both email and password',
+                severity: 'error'
             });
         }
         try {
             let res = await login({email, password});
-            console.log(res.data);
             if (res.data.auth) {
                 authApi.setAuth(true);
-                navigate("/user/profile");
-            } else {
-                console.log("login failed");
+                setSnackbar({
+                    open: true,
+                    message: 'Login successful',
+                    severity: 'success'
+                });
+                setTimeout(() => {
+                    navigate("/user/profile");
+                }, 500);   
             }
-        } catch(err) {
+        } catch(axiosError) {
+            let { message } = axiosError.response.data;
             authApi.setAuth(false);
-            console.log("login failed");
+            return setSnackbar({
+                open: true,
+                message: message,
+                severity: 'error'
+            });
         }
     }
 
-    const handleClose = () => {
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
         setSnackbar({
             open: false,
-            message: ''
+            message: '',
+            severity: 'error'
         })
     }
+
     const SnackbarAlert = (
-        <React.Fragment>
             <Snackbar
                 anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                 open={snackbar.open}
-                severity='error'
                 autoHideDuration={6000}
                 onClose={handleClose}
                 message={snackbar.message}
                 key={'top' + 'center'}
-            />
-        </React.Fragment>
+            >
+                <Alert severity={snackbar.severity} onClose={handleClose} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>   
+            </Snackbar>
+        
     );
 
     return ( 

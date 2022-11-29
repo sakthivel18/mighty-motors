@@ -6,13 +6,20 @@ import { useContext } from "react";
 import { hasLoggedIn } from "../services/AuthService";
 import { getUserTrades } from "../services/TradeService";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; 
+import axios from "axios";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from "./Alert";
 
 const Profile = () => {
     const navigate = useNavigate();
     const authApi = useContext(AuthApi);
     const [username, setUsername] = useState("");
     const [userTrades, setUserTrades] = useState([]);   
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'error'
+    });
 
     useEffect(() => {
         if (!authApi.auth) navigate("/");
@@ -54,7 +61,14 @@ const Profile = () => {
     const deleteTrade = async (trade) => {
         try {
             await axios.delete('http://localhost:5000/trades/' + trade.id, {withCredentials: true});
-            fetchUserTrades();
+            await setSnackbar({
+                open: true,
+                message: 'Trade deleted successfully',
+                severity: 'success'
+            });
+            setTimeout(() => {
+                fetchUserTrades();
+            }, 0);
         } catch(axiosError) {
             let { status } = axiosError.response;
             let { message } = axiosError.response.data;
@@ -76,6 +90,33 @@ const Profile = () => {
             }
         });
     }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar({
+            open: false,
+            message: '',
+            severity: 'error'
+        })
+    }
+
+    const SnackbarAlert = (
+            <Snackbar
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message={snackbar.message}
+                key={'top' + 'center'}
+            >
+                <Alert severity={snackbar.severity} onClose={handleClose} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>   
+            </Snackbar>
+        
+    );
 
     return (
         <div className="container home-page-content">
@@ -117,6 +158,7 @@ const Profile = () => {
                     </table>
                 </div>
             </div>
+            {SnackbarAlert}
         </div>
     );
 }

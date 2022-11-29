@@ -24,7 +24,7 @@ exports.login = async (req, res) => {
             
         } else {
             return res.status(500).json({
-                message: 'Unable to login',
+                message: 'Internal server error - unable to login',
                 auth: false,
             });
         }
@@ -49,7 +49,7 @@ exports.signup = async (req, res) => {
             auth: true,
         });
     } catch (err) {
-        return res.status(200).json({ 'message' : 'Internal server error - unable to sign up', auth: false });
+        return res.status(500).json({ 'message' : 'Internal server error - unable to sign up', auth: false });
     }
 };
 
@@ -102,7 +102,6 @@ exports.signOut = async (req, res) => {
 
 exports.getUserTrades = async (req, res) => {
     try {
-        console.log('inside getUserTrades');
         const categories = await Trade.find();
         let userTrades = [];
         categories.forEach(category => {

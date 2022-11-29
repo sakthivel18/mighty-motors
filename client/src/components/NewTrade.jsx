@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import '../styles/newTrade.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from "./Alert";
 
 const NewTrade = () => {
     const navigate = useNavigate();
@@ -15,10 +15,38 @@ const NewTrade = () => {
     const [description, setDescription] = useState('');
     const [cost, setCost] = useState();
     const [categoryNames, setCategoryNames] = useState([]);
-    const [show, setShow] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'error'
+    });
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar({
+            open: false,
+            message: '',
+            severity: 'error'
+        })
+    }
+
+    const SnackbarAlert = (
+        <Snackbar
+            anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            message={snackbar.message}
+            key={'top' + 'center'}
+        >
+            <Alert severity={snackbar.severity} onClose={handleClose} sx={{ width: '100%' }}>
+                {snackbar.message}
+            </Alert>   
+        </Snackbar>
+    
+);
 
     useEffect(() => {
         const fetchCategoryNames = async () => {
@@ -47,10 +75,18 @@ const NewTrade = () => {
         try {
             let areOtherFieldsNotValid = !title || !tradeLocation || !description || cost === null || cost === undefined;
             if (category.id === 0 && (!category.label || areOtherFieldsNotValid)) {
-                setShow(true);
+                await setSnackbar({
+                    open: true,
+                    message: 'Please enter all the fields',
+                    severity: 'error'
+                });
                 return;
             } else if (areOtherFieldsNotValid) {
-                setShow(true);
+                await setSnackbar({
+                    open: true,
+                    message: 'Please enter all the fields',
+                    severity: 'error'
+                });
                 return;
             }
             const trade = {
@@ -63,7 +99,14 @@ const NewTrade = () => {
             };
             const response = await axios.post('http://localhost:5000/trades/create', { "trade" : trade }, {withCredentials: true});
             if (response.status === 200) {
-                navigate('/trades');
+                await setSnackbar({
+                    open: true,
+                    message: 'Trade created successfully',
+                    severity: 'success'
+                });
+                setTimeout(() => {
+                    navigate('/trades');
+                }, 500);
             }
         } catch(axiosError) {
             let { status } = axiosError.response;
@@ -83,17 +126,6 @@ const NewTrade = () => {
             <div className="row mt-5">
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
-                    <Modal
-                        show={show}
-                        onHide={handleClose}
-                        backdrop="static"
-                        keyboard={false}
-                    >   
-                        <Modal.Body closeButton>Please enter all the fields</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="primary" onClick={handleClose}>Ok</Button>
-                        </Modal.Footer>
-                    </Modal>
                     <form>
                         <div className="form-group row my-3">
                             <label htmlFor="category" className="col-sm-2 col-form-label">Category</label>
@@ -148,6 +180,7 @@ const NewTrade = () => {
                 </div>
                 <div className="col-md-2"></div>
             </div>
+            {SnackbarAlert}
         </div>
      );
 }

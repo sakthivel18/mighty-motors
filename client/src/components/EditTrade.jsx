@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 import {  useLocation, useNavigate } from "react-router-dom";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from "./Alert";
 
 const EditTrade = () => {
     const location = useLocation();
@@ -12,16 +12,21 @@ const EditTrade = () => {
     const [tradeLocation, setTradeLocation] = useState(trade.location);
     const [description, setDescription] = useState(trade.description)
     const [cost, setCost] = useState(trade.cost);
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'error'
+    });
 
     const putTrade = async () => {
         try {
             let areNotValidTradeDetails = !title || !tradeLocation || cost === null || cost === undefined || isNaN(parseInt(cost)) || !description;
             if (areNotValidTradeDetails) {
-                setShow(true);
+                await setSnackbar({
+                    open: true,
+                    message: 'Please enter both email and password',
+                    severity: 'error'
+                });
                 return;
             }
             const newTrade = {
@@ -33,7 +38,14 @@ const EditTrade = () => {
             }
             const response = await axios.put('http://localhost:5000/trades/' + trade.id, { trade: newTrade }, {withCredentials: true});
             if (response.status === 200) {
-                navigate('/trade/' + trade.id, { state: { id: trade.id, image: image } });
+                await setSnackbar({
+                    open: true,
+                    message: 'Trade updated successfully',
+                    severity: 'success'
+                });
+                setTimeout(() => {
+                    navigate('/trade/' + trade.id, { state: { id: trade.id, image: image } });
+                }, 500);
             }
         } catch(axiosError) {
             let { status } = axiosError.response;
@@ -46,23 +58,39 @@ const EditTrade = () => {
         }
     }
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar({
+            open: false,
+            message: '',
+            severity: 'error'
+        })
+    }
+
+    const SnackbarAlert = (
+            <Snackbar
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message={snackbar.message}
+                key={'top' + 'center'}
+            >
+                <Alert severity={snackbar.severity} onClose={handleClose} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>   
+            </Snackbar>
+        
+    );
+
     return (
         <div className="container">
             <div className="row mt-5">
                 <div className="col-md-2"></div>
                 <div className="col-md-8">
                     <h3>Edit Trade</h3>
-                    <Modal
-                        show={show}
-                        onHide={handleClose}
-                        backdrop="static"
-                        keyboard={false}
-                    >   
-                        <Modal.Body closeButton>Please enter all the fields</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="primary" onClick={handleClose}>Ok</Button>
-                        </Modal.Footer>
-                    </Modal>
                     <form>
                         <div className="form-group row my-3">
                             <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
@@ -99,6 +127,7 @@ const EditTrade = () => {
                 </div>
                 <div className="col-md-2"></div>
             </div>
+            {SnackbarAlert}
         </div>
     )
 }
