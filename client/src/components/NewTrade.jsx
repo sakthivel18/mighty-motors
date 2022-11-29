@@ -1,13 +1,15 @@
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import '../styles/newTrade.css';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from "./Alert";
+import AuthApi from '../utils/AuthApi';
 
 const NewTrade = () => {
+    const authApi = useContext(AuthApi);
     const navigate = useNavigate();
     const [category, setCategory] = useState(null);
     const [title, setTitle] = useState('');
@@ -49,6 +51,7 @@ const NewTrade = () => {
 );
 
     useEffect(() => {
+       if (!authApi.auth) return navigate("/");
         const fetchCategoryNames = async () => {
             try {
                 let response = await axios.get('http://localhost:5000/trades/categories', {withCredentials: true});

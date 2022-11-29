@@ -53,8 +53,8 @@ function App() {
               <Route exact path="/signUp" element={ !authApi.auth ? <Signup/> : <Navigate to="/" replace/> } />
               <Route exact path="/trade/:id" element={<TradeDetail/>} />
               <Route exact path="/trades" element={<Trades/>} />
-              <Route exact path="/newTrade" element={authApi.auth ? <NewTrade/> : <Navigate to="/login" replace/>} />
-              <Route exact path="/editTrade/:id" element={authApi.auth ? <EditTrade/> : <Navigate to="/login" replace/>} />
+              <Route exact path="/newTrade" element={<NewTrade/>} />
+              <Route exact path="/editTrade/:id" element={<EditTrade/>} />
               <Route exact path="/about" element={<About/>} />
               <Route exact path="/contact" element={<Contact/>} />
               <Route exact path="/error" element={<ErrorPage/>} />
