@@ -5,7 +5,7 @@ const v4 = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[
 
 exports.findAll = async (req, res) => {
     try {
-        let categories = await model.find();
+        let categories = await model.find().sort('categoryName');
         if (!categories) return res.status(500).json({ 'message' : 'Internal server error - cannot fetch categories' });
         return res.status(200).json({
             categories

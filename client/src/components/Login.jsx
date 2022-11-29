@@ -28,7 +28,7 @@ const Login = () => {
             let res = await login({email, password});
             if (res.data.auth) {
                 authApi.setAuth(true);
-                setSnackbar({
+                await setSnackbar({
                     open: true,
                     message: 'Login successful',
                     severity: 'success'
@@ -98,7 +98,7 @@ const Login = () => {
                         </div>
                     </form>
                     <div className="d-flex flex-row-reverse">
-                            <button type="" className="btn btn-primary" onClick={handleLogin}>Login</button>
+                            <button type="button" className="btn btn-primary" onClick={handleLogin}>Login</button>
                     </div>
                 </div>
             </div>
