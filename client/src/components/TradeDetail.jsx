@@ -1,11 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/tradeDetail.css";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from "./Alert";
+import AuthApi from "../utils/AuthApi";
+import { watchUnwatchTrade } from "../services/TradeService";
 
 const TradeDetail = () => {
+    const authApi = useContext(AuthApi);
     const navigate = useNavigate();
     const location = useLocation();
     const [trade, setTrade] = useState(null);
@@ -24,21 +27,22 @@ const TradeDetail = () => {
         }
     }, []);
 
-    useEffect(() => {
-        const fetchTrade = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/trades/' + location.state.id, {withCredentials: true});
-                setTrade(response.data.trade);
-            } catch(axiosError) {
-                let { status } = axiosError.response;
-                let { message } = axiosError.response.data;
-                let error = {
-                    "status": status,
-                    "message": message
-                }
-                navigate('/error', { state : { error }});
+    const fetchTrade = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/trades/' + location.state.id, {withCredentials: true});
+            setTrade(response.data.trade);
+        } catch(axiosError) {
+            let { status } = axiosError.response;
+            let { message } = axiosError.response.data;
+            let error = {
+                "status": status,
+                "message": message
             }
+            navigate('/error', { state : { error }});
         }
+    }
+    
+    useEffect(() => {
         fetchTrade();
     }, []);
     
@@ -91,6 +95,24 @@ const TradeDetail = () => {
         }
     }
 
+    const handleTrade = () => {
+        if (!authApi.auth) return navigate("/login");
+    }
+
+    const handleWatch = async () => {
+        if (!authApi.auth) return navigate("/login");
+        try {
+            let res = await watchUnwatchTrade(trade.id);
+            fetchTrade();
+        } catch (err) {
+            setSnackbar({
+                open: true,
+                message: 'Unable to watch trade',
+                severity: 'error'
+            })
+        }
+    }
+
     return ( 
         <div className="container tradeDetailContainer">
             <div className="row">
@@ -100,10 +122,11 @@ const TradeDetail = () => {
                         <div className="col-md-12">
                         <div className="row">
                             <div className="col-md-6"> <h4> {trade?.name} </h4> </div>
-                            {trade?.creator && <div className="col-md-4 d-flex flex-row-reverse"> 
-                                <button className="btn btn-danger mx-3" type="button" onClick={deleteTrade}>Delete</button> 
-                                <button className="btn btn-primary" type="button" onClick={() => navigate('/editTrade/' + trade.id, { state : { trade: trade, image: location?.state?.image }})}>Edit</button>  
-                            </div>}
+                            <div className="col-md-4 d-flex flex-row-reverse"> 
+                                <button className="btn btn-success mx-3" type="button" onClick={handleTrade}>Trade</button> 
+                                { (trade?.isWatched === false || trade?.isWatched === null) && <button className="btn btn-primary" type="button" onClick={handleWatch}>Watch</button>  }
+                                { trade?.isWatched === true && <button className="btn btn-primary" type="button" onClick={handleWatch}>Unwatch</button> }
+                            </div>
                         </div>
                         { location && location.state && location.state.image && <img src={location.state.image} alt={"car image" + Math.random()} height={200}/> }
                         </div>

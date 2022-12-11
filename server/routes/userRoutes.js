@@ -7,5 +7,6 @@ router.post('/signup', controller.signup);
 router.get('/hasLoggedIn', controller.hasLoggedIn);
 router.get('/signout', controller.signOut);
 router.get('/trades', controller.getUserTrades);
+router.get('/watchlist', controller.getUserWatchlist);
 
 module.exports = router;

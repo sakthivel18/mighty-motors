@@ -52,12 +52,24 @@ exports.findById = async (req, res) => {
         });
         let trade = category.trades.find(trade => trade.id === tradeId);
         let tradeCopy = {...trade._doc, creator: trade.createdBy == req.session.user};
+        if (!req.session.user || !trade.watchListedBy) {
+            tradeCopy = {
+                ...tradeCopy,
+                isWatched: null
+            }
+        } else {
+            tradeCopy = {
+                ...tradeCopy,
+                isWatched: trade.watchListedBy.get(req.session.user.toString()) != null
+            }
+        }
         if (!trade) return res.status(500).json({ 'message' : 'Internal server error - cannot fetch a trade with id:' + id });
         return res.status(200).json({
             trade: tradeCopy
         });
     } catch (err) {
-        return res.status(500).json({ 'message' : 'Internal server error - cannot fetch a trade with id:' + id });
+        console.log(err);
+        return res.status(500).json({ 'message' : 'Internal server error - cannot fetch the trade' });
     }
     
 };
@@ -166,5 +178,43 @@ exports.delete = async (req, res) => {
         console.log(err.message);
         return res.status(500).json({ 'message' : 'Internal server error - cannot delete the trade' });
     }  
+};
+
+
+exports.watchUnwatchMovie = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id.match(v4)) {
+            return res.status(400).json({'message' : 'Cannot find a trade with id: ' + tradeId});
+        }
+        const category = await model.findOne({
+            trades: {
+                $elemMatch: {
+                    id: id
+                }
+            }
+        });
+        if (!category) return res.status(500).json({ 'message' : 'Internal server error - cannot find the trade' });
+        const index = category.trades.findIndex(trade => trade.id === id);
+        const user = req.session.user.toString();
+        if (!category.trades[index].watchListedBy) {
+            category.trades[index].watchListedBy = new Map();
+        }
+        if (category.trades[index].watchListedBy.get(user)) {
+            category.trades[index].watchListedBy.delete(user);
+        } else {
+            category.trades[index].watchListedBy.set(user, '1');
+        }
+        await category.save();
+        let trade = {
+            ...category.trades[index]._doc,
+            isWatched: category.trades[index].get(user) != null
+        }
+        return res.status(200).json({message: "success"});
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Internal server error - unable to watch/unwatch movie'
+        });
+    }
 };
 

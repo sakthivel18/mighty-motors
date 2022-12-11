@@ -122,4 +122,31 @@ exports.getUserTrades = async (req, res) => {
             err
         });
     }
+};
+
+exports.getUserWatchlist = async (req, res) => {
+    try {
+        const user = req.session.user.toString();
+        const categories = await Trade.find();
+        let userWatchlist = [];
+        categories.forEach(category => {
+            category.trades.forEach(trade => {
+                if (trade.watchListedBy && trade.watchListedBy.get(user)) {
+                    userWatchlist.push({
+                        ...trade._doc,
+                        categoryName: category.categoryName 
+                    });
+                }
+            });
+        });
+        return res.status(200).json({
+            trades: userWatchlist
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            err
+        });
+    }
+    
 }

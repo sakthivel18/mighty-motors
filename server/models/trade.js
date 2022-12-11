@@ -41,6 +41,11 @@ const categorySchema = new Schema({
         createdBy: {
             type: Schema.Types.ObjectId,
             ref: 'User'
+        },
+        watchListedBy: {
+            type: Map,
+            of: String,
+            ref: 'User'
         }
     }]
 }, {timestamps: true});

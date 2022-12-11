@@ -4,7 +4,7 @@ import AuthApi from "../utils/AuthApi";
 import "../styles/home.css";
 import { useContext } from "react";
 import { hasLoggedIn } from "../services/AuthService";
-import { getUserTrades } from "../services/TradeService";
+import { getUserTrades, getWatchlist, watchUnwatchTrade } from "../services/TradeService";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Snackbar from '@mui/material/Snackbar';
@@ -14,7 +14,8 @@ const Profile = () => {
     const navigate = useNavigate();
     const authApi = useContext(AuthApi);
     const [username, setUsername] = useState("");
-    const [userTrades, setUserTrades] = useState([]);   
+    const [userTrades, setUserTrades] = useState([]);  
+    const [userWatchlist, setUserWatchList] = useState([]); 
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',
@@ -53,9 +54,25 @@ const Profile = () => {
         }
     }   
 
+    const fetchUserWatchlist = async() => {
+        try {
+            const res = await getWatchlist();
+            setUserWatchList(res.data.trades);
+        } catch (err) {
+            setUserWatchList([]);
+        }
+        
+
+    }
+
     useEffect(() => {
-        if (!authApi.auth) navigate("/");
+        if (!authApi.auth) return navigate("/");
         fetchUserTrades();
+    }, []);
+
+    useEffect(() => {
+        if (!authApi.auth) return navigate("/");
+        fetchUserWatchlist();
     }, []);
     
     const deleteTrade = async (trade) => {
@@ -117,16 +134,29 @@ const Profile = () => {
             </Snackbar>
         
     );
+    
+    const handleUnwatch = async (id) => {
+        try {
+            let res = await watchUnwatchTrade(id);
+            fetchUserWatchlist();
+        } catch (err) {
+            setSnackbar({
+                open: true,
+                message: 'Unable to watch trade',
+                severity: 'error'
+            })
+        }
+    }
 
     return (
-        <div className="container home-page-content">
+        <div className="container my-2">
             { username.length && <h2>Greetings, {username}</h2> }
             <h2>Welcome to Mighty Motors!</h2>
             <p>Where people go to find and trade cars. <br/>
             Check out our new section on premium cars</p> 
             <div className="card">
                 <div className="card-header">
-                    <h4>Trades </h4>
+                    <h4>Your Trades </h4>
                 </div>
                 <div class="table-responsive">
                     <table className="card-table table my-0">
@@ -153,6 +183,39 @@ const Profile = () => {
                         }
                         {
                             userTrades.length === 0 && <h5 className="m-3 text-center">There no trades created yet.</h5>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div className="card my-2">
+                <div className="card-header">
+                    <h4>Your Watchlist </h4>
+                </div>
+                <div class="table-responsive">
+                    <table className="card-table table my-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name </th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Created on</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            userWatchlist.length !== 0 && userWatchlist.map(trade => <tr>
+                                <td>{trade.name}</td>
+                                <td>{trade.categoryName}</td>
+                                <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
+                                <td>
+                                    <button className="btn btn-primary" onClick={() => handleUnwatch(trade.id)}> Unwatch </button> 
+                                </td>
+                            </tr>)
+                        }
+                        {
+                            userWatchlist.length === 0 && <h5 className="m-3 text-center">There no trades watchlisted yet.</h5>
                         }
                         </tbody>
                     </table>

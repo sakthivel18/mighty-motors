@@ -20,6 +20,7 @@ router.put('/:id', controller.update);
 // DELETE - deletes a trade
 router.delete('/:id', controller.delete);
 
-
+// GET - watch or unwatch a movie
+router.get('/watchlist/:id', controller.watchUnwatchMovie);
 
 module.exports = router;
