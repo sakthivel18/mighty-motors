@@ -140,7 +140,6 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        console.log("inside delete");
         const { id } = req.params;
         if (!id.match(v4)) {
             return res.status(400).json({'message' : 'Cannot find a trade with id: ' + tradeId});
