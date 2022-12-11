@@ -122,11 +122,15 @@ const TradeDetail = () => {
                         <div className="col-md-12">
                         <div className="row">
                             <div className="col-md-6"> <h4> {trade?.name} </h4> </div>
-                            <div className="col-md-4 d-flex flex-row-reverse"> 
+                            {!trade?.creator && <div className="col-md-4 d-flex flex-row-reverse"> 
                                 <button className="btn btn-success mx-3" type="button" onClick={handleTrade}>Trade</button> 
                                 { (trade?.isWatched === false || trade?.isWatched === null) && <button className="btn btn-primary" type="button" onClick={handleWatch}>Watch</button>  }
                                 { trade?.isWatched === true && <button className="btn btn-primary" type="button" onClick={handleWatch}>Unwatch</button> }
-                            </div>
+                            </div>}
+                            {trade?.creator && <div className="col-md-4 d-flex flex-row-reverse"> 
+                                <button className="btn btn-danger mx-3" type="button" onClick={deleteTrade}>Delete</button> 
+                                <button className="btn btn-primary" type="button" onClick={() => navigate('/editTrade/' + trade.id, { state : { trade: trade, image: location?.state?.image }})}>Edit</button>  
+                            </div>}
                         </div>
                         { location && location.state && location.state.image && <img src={location.state.image} alt={"car image" + Math.random()} height={200}/> }
                         </div>
