@@ -189,6 +189,14 @@ const Profile = () => {
         }
     }
 
+    const handleManageOffer = (trade) => {
+        return navigate("/offer/manage", {
+            state: {
+                trade
+            }
+        });
+    }
+
     return (
         <div className="container my-2">
             { username.length && <h2>Greetings, {username}</h2> }
@@ -221,7 +229,7 @@ const Profile = () => {
                                 <td>
                                     <button className="btn btn-primary" onClick={() => handleUpdate(trade)}> Update </button> 
                                     <button className="btn btn-danger mx-1" onClick={() => deleteTrade(trade)}> Delete </button>
-                                    {trade.offers && trade.offers.length > 0 && <button className="btn btn-secondary mx-1" onClick={() => deleteTrade(trade)}> Manage Offer </button>}
+                                    {trade.offers && trade.offers.length > 0 && <button className="btn btn-secondary mx-1" onClick={() => handleManageOffer(trade.offers)}> Manage Offer </button>}
                                 </td>
                             </tr>)
                         }

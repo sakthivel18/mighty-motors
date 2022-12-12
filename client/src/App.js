@@ -21,6 +21,7 @@ import Contact from './components/Contact';
 import AuthApi from './utils/AuthApi';
 import Profile from './components/Profile';
 import { hasLoggedIn } from './services/AuthService';
+import ManageOffer from './components/ManageOffer';
 
 function App() {
   const authApi = useContext(AuthApi);
@@ -59,6 +60,7 @@ function App() {
               <Route exact path="/contact" element={<Contact/>} />
               <Route exact path="/error" element={<ErrorPage/>} />
               <Route exact path="/user/profile" element={<Profile/>} />
+              <Route exact path="/offer/manage" element={<ManageOffer/>} />
               <Route path="*" element={<ErrorPage error={{status: 404, message: "Page Not Found"}}/>} />
             </Routes>
           </div>
