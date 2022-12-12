@@ -46,7 +46,25 @@ const categorySchema = new Schema({
             type: Map,
             of: String,
             ref: 'User'
-        }
+        }, 
+        status: {
+            type: String,
+            default: "Available"
+        },
+        offers: [{
+            tradeId: {
+                type: String,
+                required: [true, 'tradeId is required for offers']
+            },
+            offeredTradeId: {
+                type: String,
+                required: [true, 'offeredTradeId id is required for offers']
+            },
+            offeredBy: {
+                type: Schema.Types.ObjectId,
+                ref: 'User' 
+            }
+        }]
     }]
 }, {timestamps: true});
 

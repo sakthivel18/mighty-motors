@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from "./Alert";
+import { getOffers, cancelOffer } from "../services/OfferService";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Profile = () => {
         message: '',
         severity: 'error'
     });
+    const [offers, setOffers] = useState([]);
 
     useEffect(() => {
         if (!authApi.auth) navigate("/");
@@ -49,6 +51,7 @@ const Profile = () => {
         try {
             const res = await getUserTrades();
             setUserTrades(res.data.trades);
+            fetchOffers();
         } catch (err) {
             setUserTrades([]);
         }
@@ -58,6 +61,7 @@ const Profile = () => {
         try {
             const res = await getWatchlist();
             setUserWatchList(res.data.trades);
+            
         } catch (err) {
             setUserWatchList([]);
         }
@@ -148,6 +152,43 @@ const Profile = () => {
         }
     }
 
+    const fetchOffers = async () => {
+        try {
+            const res = await getOffers();
+            if (res.status === 200) {
+                setOffers(res.data.offers);
+            } else {
+                setOffers([]);
+            }
+        } catch (err) {
+            setOffers([]);
+        }
+    };
+
+   /*  useEffect(() => {
+        fetchOffers();
+    }, []); */
+
+    const handleCancelOffer = async (offer) => {
+        try {
+            const res = await cancelOffer(offer);
+            if (res.status === 200) {
+                setSnackbar({
+                    open: true,
+                    message: 'Offer cancelled successfully',
+                    severity: 'success'
+                });
+            }
+            fetchUserTrades();
+        } catch (err) {
+            setSnackbar({
+                open: true,
+                message: 'Unable to cancel offer',
+                severity: 'error'
+            });
+        }
+    }
+
     return (
         <div className="container my-2">
             { username.length && <h2>Greetings, {username}</h2> }
@@ -165,6 +206,7 @@ const Profile = () => {
                             <th scope="col">Name </th>
                             <th scope="col">Category</th>
                             <th scope="col">Created on</th>
+                            <th scope="col">Status</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                         </tr>
@@ -175,14 +217,16 @@ const Profile = () => {
                                 <td>{trade.name}</td>
                                 <td>{trade.categoryName}</td>
                                 <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
+                                <td>{trade.status}</td>
                                 <td>
                                     <button className="btn btn-primary" onClick={() => handleUpdate(trade)}> Update </button> 
                                     <button className="btn btn-danger mx-1" onClick={() => deleteTrade(trade)}> Delete </button>
+                                    {trade.offers && trade.offers.length > 0 && <button className="btn btn-secondary mx-1" onClick={() => deleteTrade(trade)}> Manage Offer </button>}
                                 </td>
                             </tr>)
                         }
                         {
-                            userTrades.length === 0 && <h5 className="m-3 text-center">There no trades created yet.</h5>
+                            userTrades.length === 0 && <h5 className="m-3 text-center">There are no trades created yet.</h5>
                         }
                         </tbody>
                     </table>
@@ -215,7 +259,42 @@ const Profile = () => {
                             </tr>)
                         }
                         {
-                            userWatchlist.length === 0 && <h5 className="m-3 text-center">There no trades watchlisted yet.</h5>
+                            userWatchlist.length === 0 && <h5 className="m-3 text-center">There are no trades watchlisted yet.</h5>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div className="card my-2">
+                <div className="card-header">
+                    <h4>Your Offers </h4>
+                </div>
+                <div class="table-responsive">
+                    <table className="card-table table my-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name </th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Created on</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            offers.length !== 0 && offers.map(offer => <tr>
+                                <td>{offer.trade.name}</td>
+                                <td>{offer.categoryName}</td>
+                                <td>{new Date(offer.trade.createdAt).toLocaleDateString()}</td>
+                                <td>{offer.trade.status}</td>
+                                <td>
+                                <button className="btn btn-danger" onClick={() => handleCancelOffer(offer)}> Cancel Offer </button> 
+                                </td>
+                            </tr>)
+                        }
+                        {
+                            offers.length === 0 && <h5 className="m-3 text-center">There are no trades watchlisted yet.</h5>
                         }
                         </tbody>
                     </table>

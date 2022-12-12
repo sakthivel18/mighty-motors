@@ -5,7 +5,11 @@ import "../styles/tradeDetail.css";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from "./Alert";
 import AuthApi from "../utils/AuthApi";
-import { watchUnwatchTrade } from "../services/TradeService";
+import { watchUnwatchTrade, getAvailableTrades } from "../services/TradeService";
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { createOffer } from '../services/OfferService';
 
 const TradeDetail = () => {
     const authApi = useContext(AuthApi);
@@ -17,6 +21,12 @@ const TradeDetail = () => {
         message: '',
         severity: 'error'
     });
+    const [show, setShow] = useState(false);
+    const [availableTrades, setAvailableTrades] = useState([]);
+    const [selectedAvailableTrade, setSelectedAvailableTrade] = useState();
+
+    const handleCloseModal = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         if (!location || !location.state || !location.state.image || !location.state.id) {
@@ -97,6 +107,7 @@ const TradeDetail = () => {
 
     const handleTrade = () => {
         if (!authApi.auth) return navigate("/login");
+        handleShow();
     }
 
     const handleWatch = async () => {
@@ -113,6 +124,47 @@ const TradeDetail = () => {
         }
     }
 
+    const handleMakeOffer = async () => {
+        try {
+            const res = await createOffer({
+                tradeId: trade.id,
+                offeredTradeId: selectedAvailableTrade.id
+            });
+            if (res.status === 200) {
+                handleCloseModal();
+                setTimeout(() => {
+                    setSnackbar({
+                        open: true,
+                        message: 'Offer made successfully',
+                        severity: 'success'
+                    });
+                }, 500);
+                setTimeout(() => { navigate("/user/profile"); }, 100);
+            }
+            
+        } catch (err) {
+            handleCloseModal();
+            setTimeout(() => {
+                setSnackbar({
+                    open: true,
+                    message: 'Unable to make offer',
+                    severity: 'error'
+                });
+            }, 500);
+        }
+        
+        
+    }
+
+    useEffect(() => {
+        const fetchAvailableTrades = async () => {
+            let res = await getAvailableTrades();
+            setAvailableTrades(res.data.trades);
+            if (res.data.trades && res.data.trades.length !== 0) setSelectedAvailableTrade(res.data.trades[0]);
+        }
+        fetchAvailableTrades();
+    }, []);
+
     return ( 
         <div className="container tradeDetailContainer">
             <div className="row">
@@ -122,8 +174,8 @@ const TradeDetail = () => {
                         <div className="col-md-12">
                         <div className="row">
                             <div className="col-md-6"> <h4> {trade?.name} </h4> </div>
-                            {!trade?.creator && <div className="col-md-4 d-flex flex-row-reverse"> 
-                                <button className="btn btn-success mx-3" type="button" onClick={handleTrade}>Trade</button> 
+                            {trade?.creator === false && <div className="col-md-4 d-flex flex-row-reverse"> 
+                                {trade?.status === "Available"  && <button className="btn btn-success mx-3" type="button" onClick={handleTrade}>Trade</button> }
                                 { (trade?.isWatched === false || trade?.isWatched === null) && <button className="btn btn-primary" type="button" onClick={handleWatch}>Watch</button>  }
                                 { trade?.isWatched === true && <button className="btn btn-primary" type="button" onClick={handleWatch}>Unwatch</button> }
                             </div>}
@@ -169,6 +221,26 @@ const TradeDetail = () => {
                 <div className="col-md-2"></div>
             </div>
             {SnackbarAlert}
+            <Modal show={show} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Choose an item to trade</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <Form>
+                <Form.Select aria-label="Default select example">
+                    { availableTrades.map(trade => <option key={trade.name} value={trade} onChange={e => setSelectedAvailableTrade(e.target.value)}>{trade.categoryName + " - " + trade.name} </option>) }
+                </Form.Select>
+                </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseModal}>
+                    Close
+                </Button>
+                <Button variant="primary" onClick={handleMakeOffer}>
+                    Make Offer
+                </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
      );
 }

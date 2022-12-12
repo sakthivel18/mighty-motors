@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const userRoutes = require('./routes/userRoutes');
 const tradeRoutes = require('./routes/tradeRoutes');
+const offerRoutes = require('./routes/offerRoutes');
 const MongoStore = require('connect-mongo');
 
 const app = express();
@@ -45,5 +46,6 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use('/user', userRoutes);
 app.use('/trades', tradeRoutes);
+app.use('/offer', offerRoutes);
 
 

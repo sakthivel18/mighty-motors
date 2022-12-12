@@ -8,5 +8,6 @@ router.get('/hasLoggedIn', controller.hasLoggedIn);
 router.get('/signout', controller.signOut);
 router.get('/trades', controller.getUserTrades);
 router.get('/watchlist', controller.getUserWatchlist);
+router.get('/availableTrades', controller.getAvailableTrades);
 
 module.exports = router;

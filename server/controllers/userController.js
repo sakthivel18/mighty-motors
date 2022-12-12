@@ -150,3 +150,27 @@ exports.getUserWatchlist = async (req, res) => {
     }
     
 }
+
+exports.getAvailableTrades = async (req, res) => {
+    try {
+        const categories = await Trade.find();
+        let userTrades = [];
+        categories.forEach(category => {
+            category.trades.forEach(trade => {
+                if (trade.createdBy == req.session.user && trade.status === "Available") {
+                    userTrades.push({
+                        ...trade._doc,
+                        categoryName: category.categoryName    
+                    });
+                }
+            });
+        });
+        return res.status(200).json({
+            trades: userTrades
+        });
+    } catch (err) {
+        return res.status(500).json({
+            err
+        });
+    }
+};
