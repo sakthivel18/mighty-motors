@@ -145,34 +145,6 @@ exports.getOffers = async (req, res) => {
     }
 };
 
-/* exports.getOffer = async (req, res) => {
-    try {
-        const offeredTradeId = req.params.id;
-        let category = await Category.findOne({
-            trades: {
-                $elemMatch: {
-                    id: offeredTradeId
-                }
-            }
-        });
-        let categories = await Category.find();
-        const offeredTrade = category.trades.find(c => c.id === offeredTradeId);
-        let offers = offeredTrade.offers;
-        let returnOffers = [];
-        offers.forEach(offer => {
-            categories.forEach(c => {
-                let trade = c.trades.find(t => t.id == offer.tradeId);
-                returnOffers.push({...offer._doc, trade, offeredTrade});
-            });
-        });
-        return res.status(200).json({offers : returnOffers});
-
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json("Unable to fetch offers");
-    }
-} */
-
 exports.getOffer = async (req, res) => {
     try {
         const { tradeId, offeredTradeId, offeredBy } = req.body;
