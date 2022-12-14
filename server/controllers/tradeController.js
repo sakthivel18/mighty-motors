@@ -165,12 +165,30 @@ exports.delete = async (req, res) => {
         });
         if (!category) return res.status(500).json({ 'message' : 'Internal server error - cannot delete the trade' });
         const index = category.trades.findIndex(trade => trade.id === id);
+        if (category.trades[index].offers && category.trades[index].offers.length > 0 && category.trades[index].status === 'Offer pending') {
+            let pivotTradeId;
+            if (category.trades[index].offers[0].tradeId == id) pivotTradeId = category.trades[index].offers[0].offeredTradeId;
+            else pivotTradeId = category.trades[index].offers[0].tradeId;
+            const pivotCategory = await model.findOne({
+                trades: {
+                    $elemMatch: {
+                        id: pivotTradeId
+                    }
+                }
+            });
+            console.log(pivotTradeId);
+            const pivotIndex = pivotCategory.trades.findIndex(trade => trade.id === pivotTradeId);
+            pivotCategory.trades[pivotIndex].status = 'Available';
+            pivotCategory.trades[pivotIndex].offers = [];
+            await pivotCategory.save();
+        } 
         category.trades.splice(index, 1);
         if (category.trades.length === 0) {
             await model.deleteOne({categoryId: category.categoryId});
         } else {
             await category.save();
         }
+
         return res.status(200).json({
             'message' : 'Trade deleted successfully'
         });

@@ -175,7 +175,7 @@ const TradeDetail = () => {
                         <div className="row">
                             <div className="col-md-6"> <h4> {trade?.name} </h4> </div>
                             {trade?.creator === false && <div className="col-md-4 d-flex flex-row-reverse"> 
-                                {trade?.status === "Available"  && <button className="btn btn-success mx-3" type="button" onClick={handleTrade}>Trade</button> }
+                                {(trade?.status === "Available" ||  authApi.auth === false) && <button className="btn btn-success mx-3" type="button" onClick={handleTrade}>Trade</button> }
                                 { (trade?.isWatched === false || trade?.isWatched === null) && <button className="btn btn-primary" type="button" onClick={handleWatch}>Watch</button>  }
                                 { trade?.isWatched === true && <button className="btn btn-primary" type="button" onClick={handleWatch}>Unwatch</button> }
                             </div>}

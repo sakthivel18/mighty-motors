@@ -227,8 +227,12 @@ const Profile = () => {
                                 <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
                                 <td>{trade.status}</td>
                                 <td>
-                                    <button className="btn btn-primary" onClick={() => handleUpdate(trade)}> Update </button> 
-                                    <button className="btn btn-danger mx-1" onClick={() => deleteTrade(trade)}> Delete </button>
+                                    {trade.status != 'Trade approved' && 
+                                        <>
+                                            <button className="btn btn-primary" onClick={() => handleUpdate(trade)}> Update </button> 
+                                            <button className="btn btn-danger mx-1" onClick={() => deleteTrade(trade)}> Delete </button>
+                                        </>
+                                    }
                                     {trade.offers && trade.offers.length > 0 && trade.status === 'Offer pending' && <button className="btn btn-secondary mx-1" onClick={() => handleManageOffer(trade)}> Manage Offer </button>}
                                 </td>
                             </tr>)
