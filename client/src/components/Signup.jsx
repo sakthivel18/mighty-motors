@@ -27,6 +27,13 @@ const Signup = () => {
                 severity: 'error'
             });
         }
+        if (password.length < 4 || password > 12) {
+            return setSnackbar({
+                open: true,
+                message: 'Password must contain 4 to 12 characters',
+                severity: 'error'
+            });
+        }
         try {
             let res = await signup({firstName, lastName, email, password});
             if (res.data.auth) {
