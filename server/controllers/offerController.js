@@ -133,7 +133,7 @@ exports.getOffers = async (req, res) => {
         categories.forEach(category => {
             category.trades.forEach(trade => {
                 trade.offers.forEach(offer => {
-                    if (offer.offeredBy == user && trade.createdBy != user) {
+                    if (offer.offeredBy == user && trade.createdBy != user && trade.status === 'Offer pending') {
                         offers.push({ ...offer._doc, trade, categoryName: category.categoryName });
                     }
                 })
