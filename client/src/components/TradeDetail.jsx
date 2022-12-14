@@ -128,7 +128,7 @@ const TradeDetail = () => {
         try {
             const res = await createOffer({
                 tradeId: trade.id,
-                offeredTradeId: selectedAvailableTrade.id
+                offeredTradeId: selectedAvailableTrade
             });
             if (res.status === 200) {
                 handleCloseModal();
@@ -160,10 +160,16 @@ const TradeDetail = () => {
         const fetchAvailableTrades = async () => {
             let res = await getAvailableTrades();
             setAvailableTrades(res.data.trades);
-            if (res.data.trades && res.data.trades.length !== 0) setSelectedAvailableTrade(res.data.trades[0]);
+            if (res.data.trades && res.data.trades.length !== 0) setSelectedAvailableTrade(res.data.trades[0].id);
         }
         fetchAvailableTrades();
     }, []);
+
+    const handleAvailableTradeChange = (event) => {
+        let selectedAvailableTrade1 = event.target.value;
+        console.log(selectedAvailableTrade1);
+        setSelectedAvailableTrade(selectedAvailableTrade1);
+    }
 
     return ( 
         <div className="container tradeDetailContainer">
@@ -227,8 +233,8 @@ const TradeDetail = () => {
                 </Modal.Header>
                 <Modal.Body>
                 <Form>
-                <Form.Select aria-label="Default select example">
-                    { availableTrades.map(trade => <option key={trade.name} value={trade} onChange={e => setSelectedAvailableTrade(e.target.value)}>{trade.categoryName + " - " + trade.name} </option>) }
+                <Form.Select aria-label="Default select example" onChange={e => handleAvailableTradeChange(e)}>
+                    { availableTrades.map(trade => <option key={trade.name} value={trade.id}>{trade.categoryName + " - " + trade.name} </option>) }
                 </Form.Select>
                 </Form>
                 </Modal.Body>
