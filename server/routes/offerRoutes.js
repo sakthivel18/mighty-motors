@@ -7,5 +7,5 @@ router.post('/accept', controller.acceptOffer);
 router.post('/reject', controller.rejectOffer);
 router.post('/cancel', controller.rejectOffer);
 router.get('/show', controller.getOffers);
-router.get('/show/:id', controller.getOffer);
+router.post('/showOffer', controller.getOffer);
 module.exports = router;

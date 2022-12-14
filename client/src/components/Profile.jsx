@@ -229,7 +229,7 @@ const Profile = () => {
                                 <td>
                                     <button className="btn btn-primary" onClick={() => handleUpdate(trade)}> Update </button> 
                                     <button className="btn btn-danger mx-1" onClick={() => deleteTrade(trade)}> Delete </button>
-                                    {trade.offers && trade.offers.length > 0 && <button className="btn btn-secondary mx-1" onClick={() => handleManageOffer(trade.offers)}> Manage Offer </button>}
+                                    {trade.offers && trade.offers.length > 0 && trade.status === 'Offer pending' && <button className="btn btn-secondary mx-1" onClick={() => handleManageOffer(trade)}> Manage Offer </button>}
                                 </td>
                             </tr>)
                         }

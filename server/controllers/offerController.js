@@ -145,7 +145,7 @@ exports.getOffers = async (req, res) => {
     }
 };
 
-exports.getOffer = async (req, res) => {
+/* exports.getOffer = async (req, res) => {
     try {
         const offeredTradeId = req.params.id;
         let category = await Category.findOne({
@@ -156,17 +156,59 @@ exports.getOffer = async (req, res) => {
             }
         });
         let categories = await Category.find();
-        const offeredTrade = category.trades.findOne(c => c.id === offeredTradeId);
+        const offeredTrade = category.trades.find(c => c.id === offeredTradeId);
         let offers = offeredTrade.offers;
+        let returnOffers = [];
         offers.forEach(offer => {
             categories.forEach(c => {
-                offer.trade = c.trades.find(t => t.id == offer.tradeId);
-                offer.offeredTrade = offeredTrade;
+                let trade = c.trades.find(t => t.id == offer.tradeId);
+                returnOffers.push({...offer._doc, trade, offeredTrade});
             });
         });
-        return res.status(200).json(offers);
+        return res.status(200).json({offers : returnOffers});
 
     } catch (err) {
+        console.log(err);
+        return res.status(500).json("Unable to fetch offers");
+    }
+} */
+
+exports.getOffer = async (req, res) => {
+    try {
+        const { tradeId, offeredTradeId, offeredBy } = req.body;
+        let category = await Category.findOne({
+            trades: {
+                $elemMatch: {
+                    id: tradeId
+                }
+            }
+        });
+        if (!category) {
+            return res.status(400).json({
+                message: "Unable to find trade"
+            });
+        }
+        let trade = category.trades.find(t => t.id === tradeId);
+        category = await Category.findOne({
+            trades: {
+                $elemMatch: {
+                    id: offeredTradeId
+                }
+            }
+        });
+        if (!category) {
+            return res.status(400).json({
+                message: "Unable to find offered trade"
+            });
+        }
+        let offeredTrade = category.trades.find(t => t.id === offeredTradeId);
+        return res.status(200).json({
+            trade,
+            offeredTrade,
+            offeredBy
+        });
+    } catch (err) {
+        console.log(err);
         return res.status(500).json("Unable to fetch offers");
     }
 }
