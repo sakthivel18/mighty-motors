@@ -22,7 +22,8 @@ mongoose.connect('mongodb://localhost:27017/mighty_motors', {useNewUrlParser: tr
 const corsOptions ={
     origin: 'http://localhost:3000', 
     credentials: true,            
-    optionSuccessStatus: 200
+    optionSuccessStatus: 200,
+    methods: ['GET','POST','PUT','DELETE']
 }
 
 app.use(cors(corsOptions));
