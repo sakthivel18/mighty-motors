@@ -12,6 +12,23 @@ const app = express();
 const port = 5000;
 const host = 'localhost';
 
+const corsOptions ={
+    origin: 'http://localhost:3000', 
+    credentials: true,            
+    optionSuccessStatus: 200,
+    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    headers: ['Content-Type']
+}
+
+app.use(cors(corsOptions));
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
 mongoose.connect('mongodb://localhost:27017/mighty_motors', {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
     app.listen(port, host, () => {
@@ -19,19 +36,7 @@ mongoose.connect('mongodb://localhost:27017/mighty_motors', {useNewUrlParser: tr
     });
 }).catch(err =>  console.log(err.message));
 
-const corsOptions ={
-    origin: 'http://localhost:3000', 
-    credentials: true,            
-    optionSuccessStatus: 200,
-    methods: ['GET','POST','PUT','DELETE']
-}
 
-app.use(cors(corsOptions));
-/* app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-    next();
-  }); */
   app.use(
     session({
         secret: "ajfeirf90aeu9eroejfoefj",
